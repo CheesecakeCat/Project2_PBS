@@ -1,0 +1,30 @@
+<apex:page controller="SearchPageController">
+    <apex:form >
+        
+    <div>
+        <apex:inputCheckbox onchange="{!EnableSpecialty()}"/>Specialty
+        <apex:selectList id="Specialty" value="{!selected_specialty}" size="1" disabled="true">
+            <apex:selectOptions value="{!SpecialtyOptions}"></apex:selectOptions>
+        </apex:selectList>
+    </div>
+    <div>
+        <apex:inputCheckbox label="Location"/>Location
+        <apex:inputText />
+    </div>
+    <div>
+        <apex:inputCheckbox label="Language"/>Language
+        <apex:inputText />
+    </div>
+    <div>
+        <apex:inputCheckbox label="Gender"/>Gender
+        <apex:inputText />
+    </div>
+    <div>
+        <apex:inputCheckbox label="Name"/>Name
+        <apex:inputText />
+    </div>
+    <div>
+        <apex:commandButton value="Search"/>
+    </div>
+    </apex:form>
+</apex:page>
