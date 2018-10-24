@@ -1,6 +1,18 @@
 public class SearchPageController {
     public String selected_specialty{get; set;}
     public String selected_language{get;set;}
+    public List<Provider__c> provider_list = new List<Provider__c>();
+    
+    public SearchPageController()
+    {
+        //provider_list =  [SELECT Name, Address__c, Specialty__c FROM Provider__c];
+    }
+    
+    public List<Provider__c> getProviders()
+    {
+        provider_list = [SELECT Name, Address__c, Specialty__c FROM Provider__c];
+        return provider_list;
+    }
     
 	public List<SelectOption> getSpecialtyOptions()
     {
