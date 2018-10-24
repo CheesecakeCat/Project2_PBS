@@ -39,7 +39,24 @@ public class SearchPageController {
     public List<selectOption> getLanguageOptions()
     {
         List<SelectOption> languages = new List<SelectOption>();
-        
+        languages.add(new SelectOption('','None'));
+        languages.add(new SelectOption('Arabic', 'Arabic'));
+        languages.add(new SelectOption('Chinese Mandarin', 'Chinese Mandarin'));
+        languages.add(new SelectOption('Dutch', 'Dutch'));
+        languages.add(new SelectOption('English', 'English'));
+        languages.add(new SelectOption('French', 'French'));
+        languages.add(new SelectOption('German', 'German'));
+        languages.add(new SelectOption('Greek', 'Greek'));
+        languages.add(new SelectOption('Hindi', 'Hindi'));
+        languages.add(new SelectOption('Italian', 'Italian'));
+        languages.add(new SelectOption('Japanese', 'Janapese'));
+        languages.add(new SelectOption('Korean', 'Korean'));
+        languages.add(new SelectOption('Polish', 'Polish'));
+        languages.add(new SelectOption('Portuguese', 'Portuguese'));
+        languages.add(new SelectOption('Russian', 'Russian'));
+        languages.add(new SelectOption('Spanish', 'Spanish'));
+        languages.add(new SelectOption('Tagalong', 'Tagalong'));
+        languages.add(new SelectOption('Vietnamese', 'Vietnamese'));
         return languages;
     }
     
