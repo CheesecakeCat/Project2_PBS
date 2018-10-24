@@ -1,0 +1,50 @@
+public class SearchPageController {
+    public String selected_specialty{get; set;}
+    public String selected_language{get;set;}
+    
+	public List<SelectOption> getSpecialtyOptions()
+    {
+        List<SelectOption> specialties = new List<SelectOption>();
+        //value, label
+        
+        //Based on Search code, any 'None' values might have their functional values
+        //(the first parameter) set to 'None'
+        specialties.add(new SelectOption('', 'None'));
+        specialties.add(new SelectOption('Allergist/Immunologist', 'Allergist/Immunologist'));
+        specialties.add(new SelectOption('Anesthesiologist', 'Anesthesiologist'));
+        specialties.add(new SelectOption('Cardiologist', 'Cardiologist'));
+        specialties.add(new SelectOption('Dentist', 'Dentist'));
+        specialties.add(new SelectOption('Dermatologist', 'Dermatologist'));
+        specialties.add(new SelectOption('Endocrinologist', 'Endocrinologist'));
+        specialties.add(new SelectOption('Family Physicians', 'Family Physicians'));
+        specialties.add(new SelectOption('Gastroenterologist', 'Gastroenterologist'));
+        specialties.add(new SelectOption('Hermatologist', 'Hermatologist'));
+        specialties.add(new SelectOption('Infectious Disease Specialist', 'Infectious Disease Specialist'));
+        specialties.add(new SelectOption('Neurologist', 'Neurologist'));
+        specialties.add(new SelectOption('Obstetrician/Gynecologist', 'Obstetrician/Gynecologist'));
+        specialties.add(new SelectOption('Onocologist', 'Onocologist'));
+        specialties.add(new SelectOption('Ophthalmologist', 'Ophthalmologist'));
+        specialties.add(new SelectOption('Otoraryngologist', 'Otoraryngologist'));
+        specialties.add(new SelectOption('Osteopath', 'Osteopath'));
+        specialties.add(new SelectOption('Pathologist', 'Pathologist'));
+        specialties.add(new SelectOption('Pediatrician', 'Pediatrician'));
+        specialties.add(new SelectOption('Psychiatrist', 'Psychiatrist'));
+        specialties.add(new SelectOption('Pulmonologist', 'Pulmonologist'));
+        specialties.add(new SelectOption('Radiologist', 'Radiologist'));
+        specialties.add(new SelectOption('Rheumatologist', 'Rheumatologist'));
+        specialties.add(new SelectOption('Urologist', 'Urologist'));
+        return specialties;
+    }
+    
+    public List<selectOption> getLanguageOptions()
+    {
+        List<SelectOption> languages = new List<SelectOption>();
+        
+        return languages;
+    }
+    
+    public void EnableSpecialty()
+    {
+        
+    }
+}
