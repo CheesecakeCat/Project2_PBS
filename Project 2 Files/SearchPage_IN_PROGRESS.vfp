@@ -1,40 +1,48 @@
 <apex:page controller="SearchPageController">
-    <apex:form >
+    <apex:form>
         
     <div>
-        <apex:inputCheckbox id="Specialty" onChange="EnableSpecialty(this, '{!$Component.Specialty__c}');"/>Specialty
-        	<apex:actionFunction name="RefreshSpec" reRender="Specialty__c"></apex:actionFunction>
-        <apex:selectList id="Specialty__c" value="{!selected_specialty}" size="1" disabled="false">
+        <!--apex:inputCheckbox id="Specialty" onChange="EnableSpecialty(this, '{!$Component.Specialty__c}');" value="{!SpecialtyChecked}"/>Specialty-->
+        <apex:inputCheckbox id="Specialty"/>Specialty
+        	<apex:actionSupport event="onChange" action="{!swapSpecialtyChecked}" reRender="Specialty"/>
+        	<!--apex:actionFunction name="RefreshSpec" reRender="Specialty__c"></apex:actionFunction-->
+        <apex:selectList id="Specialty__c" value="{!specialtyValue}" size="1" disabled="false">
             <apex:selectOptions value="{!SpecialtyOptions}"/>
         </apex:selectList>
     </div>
     <div>
-        <apex:inputCheckbox />Location
-        <apex:inputText id="Address__c"/>
+        <apex:inputCheckbox id="Location"/>Location
+        	<apex:actionSupport event="onChange" action="{!swapLocationChecked}" reRender="Location"/>
+        <apex:inputText id="Address__c" value="{!locationValue}"/>
     </div>
     <div>
         <apex:inputCheckbox id="Language" onChange="EnableLanguage(this, '{!$Component.Language__c}');"/>Language
-        <apex:actionFunction name="RefreshLang" reRender="Language__c"></apex:actionFunction>
-        <apex:selectList id="Language__c" value="{!selected_language}" size="1" disabled="false"> 
+        	<apex:actionSupport event="onChange" action="{!swapLanguageChecked}" reRender="Language"/>
+        <!--apex:actionFunction name="RefreshLang" reRender="Language__c"></apex:actionFunction-->
+        <apex:selectList id="Language__c" value="{!languageValue}" size="1" disabled="false"> 
             <apex:selectOptions value="{!LanguageOptions}"/>
         </apex:selectList>
     </div>
     <div>
         <apex:inputCheckbox />Gender
-        <apex:inputText id="Gender__c"/>
+        <apex:inputText id="Gender__c" value="{!genderValue}"/>
     </div>
     <div>
         <apex:inputCheckbox />Name
-        <apex:inputText id="Name"/>
+        <apex:inputText id="Name" value="{!nameValue}"/>
     </div>
     <div>
-        <apex:commandButton value="Search"/>
+        <apex:commandButton value="Search" action="{!updateProviders}"/>
+        <!-- This is the point of failure; updateProviders is not being called. 
+			 Command button may be the incorrect tag for the below action support tag.
+			 That, or the tag is not linked. -->
+        	<apex:actionSupport event="onClick" action="{!updateProviders}" reRender="list"/>
     </div>
     </apex:form>
     
-    <apex:pageBlock >
-    	<apex:form >
-        	<apex:repeat value="{!Providers}" var="p">
+    <apex:pageBlock>
+    	<apex:form>
+        	<apex:repeat id="list" value="{!Providers}" var="p">
                 <div>
                     <span style="font-weight:bold">Name: </span>{!p.Name}
                     <span style="font-weight:bold">Specialty: </span>{!p.Specialty__c}
@@ -46,7 +54,7 @@
         </apex:form>
     </apex:pageBlock>
     <script>
-    	function EnableSpecialty(input, textid)
+    /*function EnableSpecialty(input, textid)
     	{
         	if(input.checked)
             {
@@ -57,7 +65,7 @@
             {
                 document.getElementById(textid).disabled = "true";
             }
-        }
+        }*/
     	function EnableLanguage(input, textid)
     	{
         	if(input.checked)

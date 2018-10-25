@@ -1,26 +1,38 @@
 public class SearchPageController {
-    public String selected_specialty{get; set;}
-    public String selected_language{get;set;}
-    public List<Provider__c> provider_list = new List<Provider__c>();
+    public List<Provider__c> provider_list;
+    
+    public Boolean specialtyChecked;
+    public Boolean locationChecked;
+    public Boolean languageChecked;
+    public Boolean genderChecked;
+    public Boolean nameChecked;
+    
+    /*These values need to be populated when the search button is pressed*/
+    public String specialtyValue{get;set;}
+    public String locationValue{get;set;}
+    public String languageValue{get;set;}
+    public String genderValue{get;set;}
+    public String nameValue{get;set;}
     
     public SearchPageController()
     {
-        //provider_list =  [SELECT Name, Address__c, Specialty__c FROM Provider__c];
+        provider_list = new List<Provider__c>();
+        specialtyChecked = false;
+        locationChecked = false;
+        languageChecked = false;
+        genderChecked = false;
+        nameChecked = false;
     }
     
     public List<Provider__c> getProviders()
     {
-        provider_list = [SELECT Name, Address__c, Specialty__c FROM Provider__c];
         return provider_list;
     }
     
 	public List<SelectOption> getSpecialtyOptions()
     {
         List<SelectOption> specialties = new List<SelectOption>();
-        //value, label
-        
-        //Based on Search code, any 'None' values might have their functional values
-        //(the first parameter) set to 'None'
+        //Paris are value and label
         specialties.add(new SelectOption('', 'None'));
         specialties.add(new SelectOption('Allergist/Immunologist', 'Allergist/Immunologist'));
         specialties.add(new SelectOption('Anesthesiologist', 'Anesthesiologist'));
@@ -48,6 +60,96 @@ public class SearchPageController {
         return specialties;
     }
     
+    public Boolean getSpecialtyChecked()
+    {
+        return specialtyChecked;
+    }
+    
+    public Boolean getLocationChecked()
+    {
+        return locationChecked;
+    }
+    
+    public Boolean getLanguageChecked()
+    {
+        return languageChecked;
+    }
+    
+    public Boolean getGenderChecked()
+    {
+        return genderChecked;
+    }
+    
+    public Boolean getNameChecked()
+    {
+        return nameChecked;
+    }
+    
+    public PageReference swapSpecialtyChecked()
+    {
+        if(specialtyChecked == true)
+        {
+        	specialtyChecked = false;
+        }
+        else
+        {
+            specialtyChecked = true;
+        }
+        return null;
+    }
+    
+    public PageReference swapLocationChecked()
+    {
+        if(locationChecked == true)
+        {
+        	locationChecked = false;
+        }
+        else
+        {
+            locationChecked = true;
+        }
+        return null;
+    }
+    
+    public PageReference swapLanguageChecked()
+    {
+        if(languageChecked == true)
+        {
+        	languageChecked = false;
+        }
+        else
+        {
+            languageChecked = true;
+        }
+        return null;
+    }
+    
+    public PageReference swapGenderChecked()
+    {
+        if(genderChecked == true)
+        {
+        	genderChecked = false;
+        }
+        else
+        {
+            genderChecked = true;
+        }
+        return null;
+    }
+    
+    public PageReference swapNameChecked()
+    {
+        if(nameChecked == true)
+        {
+        	nameChecked = false;
+        }
+        else
+        {
+            nameChecked = true;
+        }
+        return null;
+    }
+    
     public List<selectOption> getLanguageOptions()
     {
         List<SelectOption> languages = new List<SelectOption>();
@@ -72,8 +174,58 @@ public class SearchPageController {
         return languages;
     }
     
-    public void EnableSpecialty()
+    
+    public void updateProviders()
     {
+        Boolean first_pass = true;
+        String query_string = 'SELECT Name, Address__c, Specialty__c, Gend__c, Languages__c FROM Provider__c';
+        String component = '';
+        List<Boolean> checked_boxes = new List<Boolean>{specialtyChecked, locationChecked, languageChecked, genderChecked, nameChecked};
+        List<String> input_values = new List<String>{specialtyValue, locationValue, languageValue, genderValue, nameValue};
         
+        //Loop cycles through all input elements and checks to see
+        //which ones are selected.
+        for(Integer i=0;i<5;i++)
+        {
+            if(checked_boxes[i] == true) //If box is checked
+            {
+                //Set the value of component based on the value of i
+            	switch on i
+            	{
+                	when 0{
+                    	component = 'Specialty__c';
+                	}
+                	when 1{
+                    	component = 'Address__c';
+                	}
+                	when 2{
+                    	component = 'Language__c';
+                	}
+                	when 3{
+                    	component = 'Gender__c';
+                	}
+                	when 4{	
+                    	component = 'Name';
+                	}
+            	}
+                //Check to see if this is the first input element with 
+                //a corresponding checked checkbox
+                //(i.e. is this the first time we are seeing a selected element.)
+                if(first_pass == true)
+                {
+                    //If first pass is true, add a 'WHERE' clause and set first_pass to false
+             		query_string += 'WHERE ' + component + ' = \'' + input_values[i] + '\'';   
+                    first_pass = false;
+                }
+                else
+                {
+                    //If first pass is false, append an 'AND' clause
+                    query_string += ' AND ' + component + ' = \'' + input_values[i] + '\'';
+                }
+            }
+        }
+        query_string = 'SELECT Name, Address__c, Specialty__c, Gender__c, Language__c FROM Provider__c';
+        System.debug(query_string);
+        provider_list = Database.query(query_string);
     }
 }
