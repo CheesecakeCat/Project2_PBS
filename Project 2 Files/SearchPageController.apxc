@@ -16,6 +16,7 @@ public class SearchPageController {
     
     public SearchPageController()
     {
+        System.debug('Controller Entered');
         provider_list = new List<Provider__c>();
         specialtyChecked = false;
         locationChecked = false;
@@ -26,6 +27,7 @@ public class SearchPageController {
     
     public List<Provider__c> getProviders()
     {
+        System.debug('getProviders entered');
         return provider_list;
     }
     
@@ -172,8 +174,10 @@ public class SearchPageController {
     
     public void updateProviders()
     {
+        System.debug('Update Entered');
         Boolean first_pass = true;
-        String query_string = 'SELECT Name, Address__c, Specialty__c, Gend__c, Languages__c FROM Provider__c';
+        Boolean lang = false;
+        String query_string = 'SELECT Name, Address__c, Specialty__c, Gender__c, Languages__c FROM Provider__c';
         String component = '';
         List<Boolean> checked_boxes = new List<Boolean>{specialtyChecked, locationChecked, languageChecked, genderChecked, nameChecked};
         List<String> input_values = new List<String>{specialtyValue, locationValue, languageValue, genderValue, nameValue};
@@ -182,8 +186,11 @@ public class SearchPageController {
         //which ones are selected.
         for(Integer i=0;i<5;i++)
         {
+            System.debug(checked_boxes[i]);
+            System.debug(input_values[i]);
             if(checked_boxes[i] == true) //If box is checked
             {
+                lang = false;
                 //Set the value of component based on the value of i
             	switch on i
             	{
@@ -194,7 +201,8 @@ public class SearchPageController {
                     	component = 'Address__c';
                 	}
                 	when 2{
-                    	component = 'Language__c';
+                    	component = 'Languages__c';
+                        lang = true;
                 	}
                 	when 3{
                     	component = 'Gender__c';
@@ -208,9 +216,20 @@ public class SearchPageController {
                 //(i.e. is this the first time we are seeing a selected element.)
                 if(first_pass == true)
                 {
-                    //If first pass is true, add a 'WHERE' clause and set first_pass to false
-             		query_string += 'WHERE ' + component + ' = \'' + input_values[i] + '\'';   
+                    if(lang == true)
+                    {
+                        query_string += ' WHERE ' + component + ' includes (\'' + input_values[i] + '\')';
+                    }
+                    else
+                    {
+                    	//If first pass is true, add a 'WHERE' clause and set first_pass to false
+             			query_string += ' WHERE ' + component + ' = \'' + input_values[i] + '\'';   
+                    }
                     first_pass = false;
+                }
+                else if(lang == true)
+                {
+                    query_string += ' AND ' + component + ' includes (\'' + input_values[i] + '\')';
                 }
                 else
                 {
@@ -219,7 +238,6 @@ public class SearchPageController {
                 }
             }
         }
-        query_string = 'SELECT Name, Address__c, Specialty__c, Gender__c, Language__c FROM Provider__c';
         System.debug(query_string);
         provider_list = Database.query(query_string);
     }
