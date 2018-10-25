@@ -3,8 +3,9 @@
         
     <div>
         <!--apex:inputCheckbox id="Specialty" onChange="EnableSpecialty(this, '{!$Component.Specialty__c}');" value="{!SpecialtyChecked}"/>Specialty-->
-        <apex:inputCheckbox id="Specialty"/>Specialty
+        <apex:inputCheckbox id="Specialty" value="{!specialtyChecked}">Specialty
         	<apex:actionSupport event="onChange" action="{!swapSpecialtyChecked}" reRender="Specialty"/>
+        </apex:inputCheckbox>
         	<!--apex:actionFunction name="RefreshSpec" reRender="Specialty__c"></apex:actionFunction-->
         <apex:selectList id="Specialty__c" value="{!specialtyValue}" size="1" disabled="false">
             <apex:selectOptions value="{!SpecialtyOptions}"/>
@@ -32,7 +33,9 @@
         <apex:inputText id="Name" value="{!nameValue}"/>
     </div>
     <div>
-        <apex:commandButton value="Search" action="{!updateProviders}"/>
+        <apex:commandButton value="Search" action="{!updateProviders}">
+            <apex:param value="" assignTo=""/>
+        </apex:commandButton>
         <!-- This is the point of failure; updateProviders is not being called. 
 			 Command button may be the incorrect tag for the below action support tag.
 			 That, or the tag is not linked. -->

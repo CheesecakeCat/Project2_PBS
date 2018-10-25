@@ -1,11 +1,11 @@
 public class SearchPageController {
     public List<Provider__c> provider_list;
     
-    public Boolean specialtyChecked;
-    public Boolean locationChecked;
-    public Boolean languageChecked;
-    public Boolean genderChecked;
-    public Boolean nameChecked;
+    public Boolean specialtyChecked{get;set;}
+    public Boolean locationChecked{get;set;}
+    public Boolean languageChecked{get;set;}
+    public Boolean genderChecked{get;set;}
+    public Boolean nameChecked{get;set;}
     
     /*These values need to be populated when the search button is pressed*/
     public String specialtyValue{get;set;}
@@ -85,7 +85,7 @@ public class SearchPageController {
         return nameChecked;
     }
     
-    public PageReference swapSpecialtyChecked()
+    public void swapSpecialtyChecked()
     {
         if(specialtyChecked == true)
         {
@@ -95,10 +95,9 @@ public class SearchPageController {
         {
             specialtyChecked = true;
         }
-        return null;
     }
     
-    public PageReference swapLocationChecked()
+    public void swapLocationChecked()
     {
         if(locationChecked == true)
         {
@@ -108,10 +107,9 @@ public class SearchPageController {
         {
             locationChecked = true;
         }
-        return null;
     }
     
-    public PageReference swapLanguageChecked()
+    public void swapLanguageChecked()
     {
         if(languageChecked == true)
         {
@@ -121,10 +119,9 @@ public class SearchPageController {
         {
             languageChecked = true;
         }
-        return null;
     }
     
-    public PageReference swapGenderChecked()
+    public void swapGenderChecked()
     {
         if(genderChecked == true)
         {
@@ -134,10 +131,9 @@ public class SearchPageController {
         {
             genderChecked = true;
         }
-        return null;
     }
     
-    public PageReference swapNameChecked()
+    public void swapNameChecked()
     {
         if(nameChecked == true)
         {
@@ -147,7 +143,6 @@ public class SearchPageController {
         {
             nameChecked = true;
         }
-        return null;
     }
     
     public List<selectOption> getLanguageOptions()
