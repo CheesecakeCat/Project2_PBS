@@ -1,0 +1,94 @@
+<apex:page controller="SearchPageController">
+    <apex:form >
+        
+    <div>
+        <!--apex:inputCheckbox id="Specialty" onChange="EnableSpecialty(this, '{!$Component.Specialty__c}');" value="{!SpecialtyChecked}"/>Specialty-->
+        <apex:inputCheckbox id="Specialty" value="{!specialtyChecked}">
+        	<apex:actionSupport event="onChange" action="{!swapSpecialtyChecked}" reRender="Specialty"/>
+        </apex:inputCheckbox>Specialty
+        	<!--apex:actionFunction name="RefreshSpec" reRender="Specialty__c"></apex:actionFunction-->
+        <apex:selectList id="Specialty__c" value="{!specialtyValue}" size="1" disabled="false">
+            <apex:selectOptions value="{!SpecialtyOptions}"/>
+        </apex:selectList>
+    </div>
+    <div>
+        <apex:inputCheckbox id="Location" value="{!locationChecked}"/>Location
+        	<apex:actionSupport event="onChange" action="{!swapLocationChecked}" reRender="Location"/>
+        <apex:inputText id="Address__c" value="{!locationValue}"/>
+    </div>
+    <div>
+        <apex:inputCheckbox id="Language" value="{!languageChecked}">
+        
+        </apex:inputCheckbox>Language
+        	<apex:actionSupport event="onChange" action="{!swapLanguageChecked}" reRender="Language"/>
+        <apex:selectList id="Language__c" value="{!languageValue}" size="1" disabled="false"> 
+            <apex:selectOptions value="{!LanguageOptions}"/>
+        </apex:selectList>
+    </div>
+    <div>
+        <apex:inputCheckbox id="Gender" value="{!genderChecked}">
+            <!--apex:actionSupport event="onChange" action="{!swapGenderChecked}" reRender="Gender"/-->
+        </apex:inputCheckbox>Gender
+        <apex:selectList id="Gender__c" value="{!genderValue}" size="1" disabled="false">
+            <apex:selectOptions value="{!GenderOptions}"/>
+        </apex:selectList>
+    </div>
+    <div>
+        <apex:inputCheckbox />Name
+        <apex:inputText id="Name" value="{!nameValue}"/>
+    </div>
+    <div>
+        <apex:commandButton value="Search" action="{!updateProviders}">
+            <apex:param value="{!specialtyChecked}" assignTo="{!specialtyChecked}"/>
+            <apex:param value="{!locationChecked}" assignTo="{!locationChecked}"/>
+            <apex:param value="{!languageChecked}" assignTo="{!languageChecked}"/>
+            <apex:param value="{!genderChecked}" assignTo="{!genderChecked}"/>
+            <apex:param value="{!nameChecked}" assignTo="{!nameChecked}"/>
+        </apex:commandButton>
+        <!-- This is the point of failure; updateProviders is not being called. 
+			 Command button may be the incorrect tag for the below action support tag.
+			 That, or the tag is not linked. -->
+        	<apex:actionSupport event="onClick" action="{!updateProviders}" reRender="list"/>
+    </div>
+    </apex:form>
+    
+    <apex:pageBlock >
+    	<apex:form >
+        	<apex:repeat id="list" value="{!Providers}" var="p">
+                <div>
+                    <span style="font-weight:bold">Name: </span>{!p.Name}
+                    <span style="font-weight:bold">Specialty: </span>{!p.Specialty__c}
+                    <span style="font-weight:bold">Address: </span>{!p.Address__c}
+                </div>
+                
+                <br/>
+            </apex:repeat>
+        </apex:form>
+    </apex:pageBlock>
+    <script>
+    /*function EnableSpecialty(input, textid)
+    	{
+        	if(input.checked)
+            {
+                document.getElementById(textid).disabled = "false";
+                RefreshSpec();
+            }
+            else
+            {
+                document.getElementById(textid).disabled = "true";
+            }
+        }
+    	function EnableLanguage(input, textid)
+    	{
+        	if(input.checked)
+            {
+                document.getElementById(textid).disabled = "false";
+                RefreshLang();
+            }
+            else
+            {
+                document.getElementById(textid).disabled = "true";
+            }
+        }*/
+    </script>
+</apex:page>

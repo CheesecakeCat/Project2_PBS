@@ -31,38 +31,7 @@ public class SearchPageController {
         return provider_list;
     }
     
-	public List<SelectOption> getSpecialtyOptions()
-    {
-        List<SelectOption> specialties = new List<SelectOption>();
-        //Paris are value and label
-        specialties.add(new SelectOption('', 'None'));
-        specialties.add(new SelectOption('Allergist/Immunologist', 'Allergist/Immunologist'));
-        specialties.add(new SelectOption('Anesthesiologist', 'Anesthesiologist'));
-        specialties.add(new SelectOption('Cardiologist', 'Cardiologist'));
-        specialties.add(new SelectOption('Dentist', 'Dentist'));
-        specialties.add(new SelectOption('Dermatologist', 'Dermatologist'));
-        specialties.add(new SelectOption('Endocrinologist', 'Endocrinologist'));
-        specialties.add(new SelectOption('Family Physicians', 'Family Physicians'));
-        specialties.add(new SelectOption('Gastroenterologist', 'Gastroenterologist'));
-        specialties.add(new SelectOption('Hermatologist', 'Hermatologist'));
-        specialties.add(new SelectOption('Infectious Disease Specialist', 'Infectious Disease Specialist'));
-        specialties.add(new SelectOption('Neurologist', 'Neurologist'));
-        specialties.add(new SelectOption('Obstetrician/Gynecologist', 'Obstetrician/Gynecologist'));
-        specialties.add(new SelectOption('Onocologist', 'Onocologist'));
-        specialties.add(new SelectOption('Ophthalmologist', 'Ophthalmologist'));
-        specialties.add(new SelectOption('Otoraryngologist', 'Otoraryngologist'));
-        specialties.add(new SelectOption('Osteopath', 'Osteopath'));
-        specialties.add(new SelectOption('Pathologist', 'Pathologist'));
-        specialties.add(new SelectOption('Pediatrician', 'Pediatrician'));
-        specialties.add(new SelectOption('Psychiatrist', 'Psychiatrist'));
-        specialties.add(new SelectOption('Pulmonologist', 'Pulmonologist'));
-        specialties.add(new SelectOption('Radiologist', 'Radiologist'));
-        specialties.add(new SelectOption('Rheumatologist', 'Rheumatologist'));
-        specialties.add(new SelectOption('Urologist', 'Urologist'));
-        return specialties;
-    }
-    
-    public Boolean getSpecialtyChecked()
+	public Boolean getSpecialtyChecked()
     {
         return specialtyChecked;
     }
@@ -147,10 +116,41 @@ public class SearchPageController {
         }
     }
     
+    public List<SelectOption> getSpecialtyOptions()
+    {
+        List<SelectOption> specialties = new List<SelectOption>();
+        //Paris are value and label
+        specialties.add(new SelectOption('', 'None Specified'));
+        specialties.add(new SelectOption('Allergist/Immunologist', 'Allergist/Immunologist'));
+        specialties.add(new SelectOption('Anesthesiologist', 'Anesthesiologist'));
+        specialties.add(new SelectOption('Cardiologist', 'Cardiologist'));
+        specialties.add(new SelectOption('Dentist', 'Dentist'));
+        specialties.add(new SelectOption('Dermatologist', 'Dermatologist'));
+        specialties.add(new SelectOption('Endocrinologist', 'Endocrinologist'));
+        specialties.add(new SelectOption('Family Physicians', 'Family Physicians'));
+        specialties.add(new SelectOption('Gastroenterologist', 'Gastroenterologist'));
+        specialties.add(new SelectOption('Hermatologist', 'Hermatologist'));
+        specialties.add(new SelectOption('Infectious Disease Specialist', 'Infectious Disease Specialist'));
+        specialties.add(new SelectOption('Neurologist', 'Neurologist'));
+        specialties.add(new SelectOption('Obstetrician/Gynecologist', 'Obstetrician/Gynecologist'));
+        specialties.add(new SelectOption('Onocologist', 'Onocologist'));
+        specialties.add(new SelectOption('Ophthalmologist', 'Ophthalmologist'));
+        specialties.add(new SelectOption('Otoraryngologist', 'Otoraryngologist'));
+        specialties.add(new SelectOption('Osteopath', 'Osteopath'));
+        specialties.add(new SelectOption('Pathologist', 'Pathologist'));
+        specialties.add(new SelectOption('Pediatrician', 'Pediatrician'));
+        specialties.add(new SelectOption('Psychiatrist', 'Psychiatrist'));
+        specialties.add(new SelectOption('Pulmonologist', 'Pulmonologist'));
+        specialties.add(new SelectOption('Radiologist', 'Radiologist'));
+        specialties.add(new SelectOption('Rheumatologist', 'Rheumatologist'));
+        specialties.add(new SelectOption('Urologist', 'Urologist'));
+        return specialties;
+    }
+    
     public List<selectOption> getLanguageOptions()
     {
         List<SelectOption> languages = new List<SelectOption>();
-        languages.add(new SelectOption('','None'));
+        languages.add(new SelectOption('','None Specified'));
         languages.add(new SelectOption('Arabic', 'Arabic'));
         languages.add(new SelectOption('Chinese Mandarin', 'Chinese Mandarin'));
         languages.add(new SelectOption('Dutch', 'Dutch'));
@@ -171,12 +171,20 @@ public class SearchPageController {
         return languages;
     }
     
+    public List<SelectOption> getGenderOptions()
+    {
+        List<SelectOption> genders = new List<SelectOption>();
+        genders.add(new SelectOption('', 'None Specified'));
+        genders.add(new SelectOption('Male', 'Male'));
+        genders.add(new SelectOption('Female', 'Female'));
+        return genders;
+    }
     
     public void updateProviders()
     {
         System.debug('Update Entered');
         Boolean first_pass = true;
-        Boolean lang = false;
+        String special_case = '';
         String query_string = 'SELECT Name, Address__c, Specialty__c, Gender__c, Languages__c FROM Provider__c';
         String component = '';
         List<Boolean> checked_boxes = new List<Boolean>{specialtyChecked, locationChecked, languageChecked, genderChecked, nameChecked};
@@ -190,7 +198,7 @@ public class SearchPageController {
             System.debug(input_values[i]);
             if(checked_boxes[i] == true) //If box is checked
             {
-                lang = false;
+                special_case = '';
                 //Set the value of component based on the value of i
             	switch on i
             	{
@@ -199,10 +207,11 @@ public class SearchPageController {
                 	}
                 	when 1{
                     	component = 'Address__c';
-                	}
+                        special_case = 'address';
+                    }
                 	when 2{
                     	component = 'Languages__c';
-                        lang = true;
+                        special_case = 'lang';
                 	}
                 	when 3{
                     	component = 'Gender__c';
@@ -216,24 +225,32 @@ public class SearchPageController {
                 //(i.e. is this the first time we are seeing a selected element.)
                 if(first_pass == true)
                 {
-                    if(lang == true)
+                    //If first pass is true, add a 'WHERE' clause and set first_pass to false
+                    if(special_case == 'lang')
                     {
                         query_string += ' WHERE ' + component + ' includes (\'' + input_values[i] + '\')';
                     }
+                    else if(special_case == 'address')
+                    {
+                        query_string += ' WHERE ' + component + ' LIKE \'%' + input_values[i] + '%\'';
+                    }
                     else
                     {
-                    	//If first pass is true, add a 'WHERE' clause and set first_pass to false
              			query_string += ' WHERE ' + component + ' = \'' + input_values[i] + '\'';   
                     }
                     first_pass = false;
                 }
-                else if(lang == true)
+                //If first pass is false, append an 'AND' clause
+                else if(special_case == 'lang')
                 {
                     query_string += ' AND ' + component + ' includes (\'' + input_values[i] + '\')';
                 }
+                else if(special_case == 'address')
+                {
+                    query_string += ' AND ' + component + ' LIKE \'%' + input_values[i] + '%\'';
+                }
                 else
                 {
-                    //If first pass is false, append an 'AND' clause
                     query_string += ' AND ' + component + ' = \'' + input_values[i] + '\'';
                 }
             }
