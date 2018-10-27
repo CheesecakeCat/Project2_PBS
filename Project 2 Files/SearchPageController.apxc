@@ -196,8 +196,11 @@ public class SearchPageController {
         {
             System.debug(checked_boxes[i]);
             System.debug(input_values[i]);
-            if(checked_boxes[i] == true) //If box is checked
+            //Continue if box is checked and the selection is not blank.
+            if(checked_boxes[i] == true && input_values[i] != null)
             {
+                System.debug(input_values[i]);
+                
                 special_case = '';
                 //Set the value of component based on the value of i
             	switch on i
