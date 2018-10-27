@@ -1,5 +1,6 @@
 public class SearchPageController {
     public List<Provider__c> provider_list;
+    List<String> address_list;
     
     public Boolean specialtyChecked{get;set;}
     public Boolean locationChecked{get;set;}
@@ -14,21 +15,37 @@ public class SearchPageController {
     public String genderValue{get;set;}
     public String nameValue{get;set;}
     
+    public Decimal distance{get;set;}
+    
     public SearchPageController()
     {
         System.debug('Controller Entered');
         provider_list = new List<Provider__c>();
+        //address_list = [SELECT Address__c FROM Provider__c];
         specialtyChecked = false;
         locationChecked = false;
         languageChecked = false;
         genderChecked = false;
         nameChecked = false;
+        distance = 0.0;
     }
     
     public List<Provider__c> getProviders()
     {
         System.debug('getProviders entered');
         return provider_list;
+    }
+    
+    public List<String> getAddresses()
+    {
+        List<String> return_list = new List<String>();
+        
+        for(Provider__c s: [SELECT Address__c FROM Provider__c])
+        {
+            return_list.add(s.Address__c);
+        }
+        
+        return return_list;
     }
     
 	public Boolean getSpecialtyChecked()
@@ -260,5 +277,11 @@ public class SearchPageController {
         }
         System.debug(query_string);
         provider_list = Database.query(query_string);
+    }
+    public void testFunction()
+    {
+        Location loc1 = Location.newInstance(43.301163, -75.45281640000002);
+        Location loc2 = Location.newInstance(38.9533932, -77.35044779999998);
+        distance = Location.getDistance( loc1, loc2, 'mi');
     }
 }
