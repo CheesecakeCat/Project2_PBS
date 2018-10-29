@@ -1,4 +1,4 @@
-<apex:page controller="SearchPageController">
+<apex:page standardController="Provider__c" extensions="SearchPageController">
     <apex:form >
     <div>        
         <apex:inputCheckbox id="Specialty" Value="{!specialtyChecked}" onChange="change_Specialty(this)"/>Specialty

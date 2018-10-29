@@ -15,11 +15,12 @@ public class SearchPageController {
     public String genderValue{get;set;}
     public String nameValue{get;set;}
     
-    public SearchPageController()
+    public Id recordID{get;set;}
+    
+    public SearchPageController(ApexPages.StandardController stdController)
     {
         System.debug('Controller Entered');
         provider_list = new List<Provider__c>();
-        //address_list = [SELECT Address__c FROM Provider__c];
         specialtyChecked = false;
         locationChecked = false;
         languageChecked = false;
@@ -211,7 +212,7 @@ public class SearchPageController {
             System.debug(checked_boxes[i]);
             System.debug(input_values[i]);
             //Continue if box is checked and the selection is not blank.
-            if(checked_boxes[i] == true && input_values[i] != null)
+            if(checked_boxes[i] == true && input_values[i] != null && input_values[i] != '')
             {
                 System.debug(input_values[i]);
                 
