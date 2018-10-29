@@ -28,16 +28,16 @@
         <apex:inputText id="Name__c" value="{!nameValue}"/>
     </div>
     <div>
-        <apex:commandButton value="Search" action="{!updateProviders}"/>
+        <apex:commandButton value="Search" action="{!updateProviders}" reRender="list"/>
     </div>
     </apex:form>
     <apex:pageBlock >
     	<apex:form >
         	<apex:pageBlockTable id="list" value="{!Providers}" var="p">
                 <div>
-                    <span style="font-weight:bold">Name: </span>{!p.Name}
-                    <span style="font-weight:bold">Specialty: </span>{!p.Specialty__c}
-                    <span style="font-weight:bold">Address: </span>{!p.Address__c}>
+                    <apex:column value="{!p.Name}"/>
+                    <apex:column value="{!p.Specialty__c}"/>
+                    <apex:column value="{!p.Address__c}"/>
                 </div>
                 <br/>
             </apex:pageBlockTable>
