@@ -15,8 +15,6 @@ public class SearchPageController {
     public String genderValue{get;set;}
     public String nameValue{get;set;}
     
-    public Decimal distance{get;set;}
-    
     public SearchPageController()
     {
         System.debug('Controller Entered');
@@ -27,7 +25,6 @@ public class SearchPageController {
         languageChecked = false;
         genderChecked = false;
         nameChecked = false;
-        distance = 0.0;
     }
     
     public List<Provider__c> getProviders()
@@ -277,11 +274,5 @@ public class SearchPageController {
         }
         System.debug(query_string);
         provider_list = Database.query(query_string);
-    }
-    public void testFunction()
-    {
-        Location loc1 = Location.newInstance(43.301163, -75.45281640000002);
-        Location loc2 = Location.newInstance(38.9533932, -77.35044779999998);
-        distance = Location.getDistance( loc1, loc2, 'mi');
     }
 }

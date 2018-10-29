@@ -30,28 +30,17 @@
     <div>
         <apex:commandButton value="Search" action="{!updateProviders}"/>
     </div>
-    <div>
-        <apex:commandButton value="Run Test" action="{!testFunction}"/>
-    </div>
     </apex:form>
-    
     <apex:pageBlock >
     	<apex:form >
-            <!--apex:repeat value="{!distance}" var="d">
-                {!d}
-            </apex:repeat-->
-        	<apex:repeat id="list" value="{!Providers}" var="p">
+        	<apex:pageBlockTable id="list" value="{!Providers}" var="p">
                 <div>
                     <span style="font-weight:bold">Name: </span>{!p.Name}
                     <span style="font-weight:bold">Specialty: </span>{!p.Specialty__c}
-                    <span style="font-weight:bold">Address: </span>{!p.Address__c}
+                    <span style="font-weight:bold">Address: </span>{!p.Address__c}>
                 </div>
                 <br/>
-            </apex:repeat>
-            <apex:repeat id="near" value="{!Addresses}" var="a">
-                <span style="font-weight:bold">Address: </span>{!a}
-                <br/>
-            </apex:repeat>
+            </apex:pageBlockTable>
         </apex:form>
     </apex:pageBlock>
     
@@ -122,6 +111,5 @@
             document.getElementById("j_id0:j_id1:Name__c").disabled = true;
         }
     }
-    
     </script>
 </apex:page>
