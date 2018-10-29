@@ -35,7 +35,14 @@
     	<apex:form >
         	<apex:pageBlockTable id="list" value="{!Providers}" var="p">
                 <div>
-                    <apex:column value="{!p.Name}"/>
+                    <!--apex:column value="{!p.Name}"/-->
+                    <apex:column>
+                    	<apex:outputLink id="tableRedirect" value="https://brave-hawk-djhw37-dev-ed.lightning.force.com/lightning/r/Provider__c/{!p.Id}/view">{!p.Name}
+                            <apex:param name="parameter"
+                                        value="{!p.Id}"
+                                        assignTo="{!recordID}"/>
+                        </apex:outputLink>
+                    </apex:column>
                     <apex:column value="{!p.Specialty__c}"/>
                     <apex:column value="{!p.Address__c}"/>
                 </div>
