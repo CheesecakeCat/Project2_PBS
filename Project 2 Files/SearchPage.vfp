@@ -1,31 +1,31 @@
-<apex:page standardController="Provider__c" extensions="SearchPageController">
-    <apex:form>
+<apex:page standardController="Provider__c" extensions="SearchPageController" docType="html-5.0">
+    <apex:form >
     <div align="center">
     <span>        
-        <apex:inputCheckbox id="Specialty" Value="{!specialtyChecked}" onChange="change_Specialty(this)"/>Specialty
+        <apex:inputCheckbox id="Specialty" Value="{!specialtyChecked}" onChange="change_Specialty(this)"/>Specialty&nbsp;
         <apex:selectList id="Specialty__c" value="{!specialtyValue}" size="1">
             
             <apex:selectOptions value="{!SpecialtyOptions}"/>
         </apex:selectList>
     </span>
     <span>
-        <apex:inputCheckbox id="Location" value="{!locationChecked}" onChange="change_Location(this)"/>Location
-        <apex:inputText id="Location__c" value="{!locationValue}"/>
+        <apex:inputCheckbox id="Location" value="{!locationChecked}" onChange="change_Location(this)"/>City&nbsp;
+        <apex:inputText id="Location__c" value="{!locationValue}" onkeypress="return Limit_Input(event);"/>
     </span>
     <span>
-        <apex:inputCheckbox id="Language" value="{!languageChecked}" onChange="change_Language(this)"/>Language
+        <apex:inputCheckbox id="Language" value="{!languageChecked}" onChange="change_Language(this)"/>Language&nbsp;
         <apex:selectList id="Language__c" value="{!languageValue}" size="1"> 
             <apex:selectOptions value="{!LanguageOptions}"/>
         </apex:selectList>
     </span>
     <span>
-        <apex:inputCheckbox id="Gender" value="{!genderChecked}" onChange="change_Gender(this)"/>Gender
+        <apex:inputCheckbox id="Gender" value="{!genderChecked}" onChange="change_Gender(this)"/>Gender&nbsp;
         <apex:selectList id="Gender__c" value="{!genderValue}" size="1">
             <apex:selectOptions value="{!GenderOptions}"/>
         </apex:selectList>
     </span>
     <span>
-        <apex:inputCheckbox id="Name" value="{!nameChecked}" onChange="change_Name(this)"/>Name
+        <apex:inputCheckbox id="Name" value="{!nameChecked}" onChange="change_Name(this)"/>Name&nbsp;
         <apex:inputText id="Name__c" value="{!nameValue}"/>
     </span>
     <span>
@@ -39,7 +39,7 @@
         	<apex:pageBlockTable id="list" value="{!Providers}" var="p">
                 <div>
                     <!--apex:column value="{!p.Name}"/-->
-                    <apex:column>
+                    <apex:column >
                     	<!--apex:outputLink id="tableRedirect" value="https://brave-hawk-djhw37-dev-ed.lightning.force.com/lightning/r/Provider__c/{!p.Id}/view">{!p.Name}-->
                         <apex:commandLink action="{!Go}">{!p.Name}
                             <apex:param name="id" value="{!p.Id}"/>
@@ -52,8 +52,8 @@
                     <apex:column value="{!p.Specialty__c}"/>
                     <apex:column value="{!p.Address__c}"/>
                     <apex:column value="{!p.Phone__c}"/>
-                    <apex:column>
-                    <apex:outputLink>Book Appointment
+                    <apex:column >
+                    <apex:outputLink >Book Appointment
                         <apex:param value="{!p.Id}"
                                     />
                     </apex:outputLink>
@@ -131,6 +131,22 @@
         {
             document.getElementById("j_id0:j_id1:Name__c").disabled = true;
         }
+    }
+    
+    function Limit_Input(evt)
+    {
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ';
+        
+        var k = document.all?parseInt(evt.keyCode): parseInt(evt.which);
+            if (k!=13 && k!=8 && k!=0){
+                if ((evt.ctrlKey==false) && (evt.altKey==false)) {
+                return (characters.indexOf(String.fromCharCode(k))!=-1);
+                } else {
+                return true;
+                }
+            } else {
+                return true;
+            }
     }
     </script>
 </apex:page>
