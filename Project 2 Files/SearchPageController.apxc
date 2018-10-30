@@ -34,6 +34,27 @@ public class SearchPageController {
         return provider_list;
     }
     
+    public ApexPages.StandardSetController setProvider {
+        get {
+            if(setProvider == null) {
+                setProvider = new ApexPages.StandardSetController(Database.getQueryLocator(
+                      [select id, name from Provider__c]));
+            }
+            return setProvider;
+        }
+        set;
+    }
+    
+    /*public List<Provider__c> getProviders() {
+         return (List<Provider__c>) setProvider.getRecords();
+       }*/  
+    
+    public PageReference Go() {
+      Id id = System.currentPageReference().getParameters().get('id');
+      PageReference nextpage = new PageReference('/apex/ProviderInfo?id='+id);
+                return nextpage;
+    }
+    
     public List<String> getAddresses()
     {
         List<String> return_list = new List<String>();
@@ -200,7 +221,7 @@ public class SearchPageController {
         System.debug('Update Entered');
         Boolean first_pass = true;
         String special_case = '';
-        String query_string = 'SELECT Name, Address__c, Specialty__c, Gender__c, Languages__c FROM Provider__c';
+        String query_string = 'SELECT Name, Address__c, Specialty__c, Gender__c, Languages__c, Phone__c FROM Provider__c';
         String component = '';
         List<Boolean> checked_boxes = new List<Boolean>{specialtyChecked, locationChecked, languageChecked, genderChecked, nameChecked};
         List<String> input_values = new List<String>{specialtyValue, locationValue, languageValue, genderValue, nameValue};

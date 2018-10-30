@@ -1,53 +1,67 @@
 <apex:page standardController="Provider__c" extensions="SearchPageController">
-    <apex:form >
-    <div>        
+    <apex:form>
+    <div align="center">
+    <span>        
         <apex:inputCheckbox id="Specialty" Value="{!specialtyChecked}" onChange="change_Specialty(this)"/>Specialty
         <apex:selectList id="Specialty__c" value="{!specialtyValue}" size="1">
             
             <apex:selectOptions value="{!SpecialtyOptions}"/>
         </apex:selectList>
-    </div>
-    <div>
+    </span>
+    <span>
         <apex:inputCheckbox id="Location" value="{!locationChecked}" onChange="change_Location(this)"/>Location
         <apex:inputText id="Location__c" value="{!locationValue}"/>
-    </div>
-    <div>
+    </span>
+    <span>
         <apex:inputCheckbox id="Language" value="{!languageChecked}" onChange="change_Language(this)"/>Language
         <apex:selectList id="Language__c" value="{!languageValue}" size="1"> 
             <apex:selectOptions value="{!LanguageOptions}"/>
         </apex:selectList>
-    </div>
-    <div>
+    </span>
+    <span>
         <apex:inputCheckbox id="Gender" value="{!genderChecked}" onChange="change_Gender(this)"/>Gender
         <apex:selectList id="Gender__c" value="{!genderValue}" size="1">
             <apex:selectOptions value="{!GenderOptions}"/>
         </apex:selectList>
-    </div>
-    <div>
+    </span>
+    <span>
         <apex:inputCheckbox id="Name" value="{!nameChecked}" onChange="change_Name(this)"/>Name
         <apex:inputText id="Name__c" value="{!nameValue}"/>
-    </div>
-    <div>
+    </span>
+    <span>
         <apex:commandButton value="Search" action="{!updateProviders}" reRender="list"/>
-    </div>
+    </span>
+	</div>
     </apex:form>
     <apex:pageBlock >
     	<apex:form >
+            <div style="padding-left:10%; padding-right:10%">
         	<apex:pageBlockTable id="list" value="{!Providers}" var="p">
                 <div>
                     <!--apex:column value="{!p.Name}"/-->
                     <apex:column>
-                    	<apex:outputLink id="tableRedirect" value="https://brave-hawk-djhw37-dev-ed.lightning.force.com/lightning/r/Provider__c/{!p.Id}/view">{!p.Name}
-                            <apex:param name="parameter"
+                    	<!--apex:outputLink id="tableRedirect" value="https://brave-hawk-djhw37-dev-ed.lightning.force.com/lightning/r/Provider__c/{!p.Id}/view">{!p.Name}-->
+                        <apex:commandLink action="{!Go}">{!p.Name}
+                            <apex:param name="id" value="{!p.Id}"/>
+                        </apex:commandLink>
+                            <!--apex:param name="parameter"
                                         value="{!p.Id}"
-                                        assignTo="{!recordID}"/>
-                        </apex:outputLink>
+                                        assignTo="{!recordID}"/-->
+                        <!--/apex:outputLink-->
                     </apex:column>
                     <apex:column value="{!p.Specialty__c}"/>
                     <apex:column value="{!p.Address__c}"/>
+                    <apex:column value="{!p.Phone__c}"/>
+                    <apex:column>
+                    <apex:outputLink>Book Appointment
+                        <apex:param value="{!p.Id}"
+                                    />
+                    </apex:outputLink>
+                    </apex:column>
                 </div>
                 <br/>
             </apex:pageBlockTable>
+            </div>
         </apex:form>
     </apex:pageBlock>
     
