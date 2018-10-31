@@ -374,7 +374,7 @@ public class SearchPageController {
         new_appt.Approval_Status__c = 'Submitted';
         insert new_appt;
      
-        PageReference nextpage = new PageReference('/apex/congrat');
+        PageReference nextpage = new PageReference('/apex/ThankYouPage');
         return nextpage;
     }
     /*END OF JqueryDatePicker*/
