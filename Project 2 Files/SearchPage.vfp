@@ -53,10 +53,10 @@
                     <apex:column value="{!p.Address__c}"/>
                     <apex:column value="{!p.Phone__c}"/>
                     <apex:column >
-                    <apex:outputLink >Book Appointment
+                    <apex:commandLink action="{!BookAppointment}">Book Appointment
                         <apex:param value="{!p.Id}"
                                     />
-                    </apex:outputLink>
+                    </apex:commandLink>
                     </apex:column>
                 </div>
                 <br/>

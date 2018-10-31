@@ -384,6 +384,7 @@ public class SearchPageController {
     //public bookAppointment(apexPages.StandardController std){System.debug(provider_id);}
     public PageReference BookAppointment() {
       Id i = System.currentPageReference().getParameters().get('id');
+      provider_Id = i;
       System.debug(i);
       System.debug(provider_Id);
       PageReference nextpage = new PageReference('/apex/appointmentPage');
