@@ -45,10 +45,6 @@ public class SearchPageController {
         set;
     }
     
-    /*public List<Provider__c> getProviders() {
-         return (List<Provider__c>) setProvider.getRecords();
-       }*/  
-    
     public PageReference Go() {
       provider_Id = System.currentPageReference().getParameters().get('id');
       PageReference nextpage = new PageReference('/apex/ProviderInfo?id='+provider_id);
@@ -297,4 +293,82 @@ public class SearchPageController {
         System.debug(query_string);
         provider_list = Database.query(query_string);
     }
+    /* END OF SearchController functions*/
+    
+    /* START OF JqueryDatePicker*/
+    public Date fromDate {get;set;}
+    public String time8{get;set;}
+    public Time actual_time{get;set;}
+    public Id doctor_Id{get;set;}
+    public Id user_Id{get;set;}
+    //public JqueryDatePicker(ApexPages.StandardController stdController) {
+		//doctor_Id = stdController.getId();
+		//doctor_Id = System.ApexPages.currentPage().getParameters().get('id');
+        //user_Id = UserInfo.getUserId();
+    //}
+    public PageReference showDates() {
+        System.debug('######### fromDate'+fromDate);
+        return null;
+    }
+    public void eight(){
+        time8 = '8:AM';
+        actual_time = Time.newInstance(8,0,0,0);
+    }
+     public void nine(){
+        time8='9:AM';
+       	actual_time = Time.newInstance(9,0,0,0);
+    }
+     public void ten(){
+         time8='10:AM';
+         actual_time = Time.newInstance(10,0,0,0);
+    }
+     public void eleven(){
+         time8='11:AM';
+         actual_time = Time.newInstance(11,0,0,0);
+    }
+     public void twe(){
+        time8='12:PM';
+        actual_time = Time.newInstance(12,0,0,0);
+    }
+     public void three(){
+        time8='3:PM';
+        actual_time = Time.newInstance(15,0,0,0);
+    }
+    public void four(){
+        time8='4:PM';
+        actual_time = Time.newInstance(16,0,0,0);
+    }
+    public void five(){
+        time8='5:PM';
+        actual_time = Time.newInstance(17,0,0,0);
+    }
+    public void six(){
+         time8='6:PM';
+        actual_time = Time.newInstance(18,0,0,0);
+    }
+    public void seven(){
+        time8='7:PM';
+        actual_time = Time.newInstance(19,0,0,0);
+    }
+    public void eightPm(){
+         time8='8:PM';
+        actual_time = Time.newInstance(20,0,0,0);
+    }
+    public void Book(){
+        
+        DateTime d = DateTime.newInstance(fromDate, actual_time);
+        //Id prov_id = 'a0E0b00001GwjbyEAB';
+        //user_id = 'a0D0b00000khVrzEAE';
+        
+        Client__c c = [SELECT Id, Name FROM Client__c WHERE Name = :UserInfo.getName() LIMIT 1];
+        user_id = c.Id;
+        
+        System.debug('User Id: ' + user_id);
+        Appointment__c new_appt = new Appointment__c();
+        new_appt.Appointment_Start_Time__c = d;
+        new_appt.Client__c = user_id;
+        new_appt.Provider__c = provider_ID;
+        insert new_appt;
+    }
+    /*END OF JqueryDatePicker*/
 }
