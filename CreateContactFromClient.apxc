@@ -1,0 +1,42 @@
+public class CreateContactFromClient {
+
+    public static void createContact(List<Client__c> clients){
+        List<Contact> contactsToAdd = new List<Contact>();
+        
+        for(Client__c c: clients){
+            // create a blank contact
+            Contact con = new Contact();
+            // hard copy the necesary fields
+            con.LastName = c.Name;
+            con.Age__c = c.Age__c;
+            con.MailingStreet = c.Address__c;
+            con.Email = c.Email__c;
+            con.Gender__c = c.Gender__c;
+            con.Phone = c.Phone__c;
+            con.Preexisting_Conditions__c = c.Preexisting_Conditions__c;
+            // add it to the list
+            contactsToAdd.add(con);
+        }
+        // insert the contacts
+        insert contactsToAdd;
+    }
+    
+    public static void updateContact(List<Client__c> clients){
+        List<Contact> contactsToUpdate = new List<Contact>();
+        
+        for(Client__c c: clients){
+            Contact con = [SELECT id, LastName FROM Contact WHERE LastName=:c.Name];
+            
+            con.LastName = c.Name;
+            con.Age__c = c.Age__c;
+            con.MailingStreet = c.Address__c;
+            con.Email = c.Email__c;
+            con.Gender__c = c.Gender__c;
+            con.Phone = c.Phone__c;
+            con.Preexisting_Conditions__c = c.Preexisting_Conditions__c;
+            
+            contactsToUpdate.add(con);
+        }
+        update(contactsToUpdate);
+    }
+}

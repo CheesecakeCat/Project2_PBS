@@ -1,0 +1,11 @@
+trigger CreateContact on Client__c (before insert, before update) {
+    
+    if( Trigger.isBefore && Trigger.isInsert ){
+        CreateContactFromClient.createContact(Trigger.new);
+    }
+
+    if( Trigger.isBefore && Trigger.isUpdate ){
+        CreateContactFromClient.updateContact(Trigger.new);
+    }
+    
+}

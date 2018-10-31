@@ -1,0 +1,47 @@
+trigger CreateEvent on Appointment__c (after insert, before update) {    
+    
+    if(Trigger.isInsert && Trigger.isAfter){
+        if(CreateCalendarEventFromAppointment.NoClientCalendarOverlap(Trigger.new)){
+            if(CreateCalendarEventFromAppointment.NoProviderCalendarOverlap(Trigger.new)){
+             
+                for (Integer i = 0; i < Trigger.new.size(); i++) {
+                    // create the new approval request to submit
+                    Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
+                    req.setComments('Submitted for approval. Please approve.');
+                    req.setObjectId(Trigger.new[i].Id);
+                    // submit the approval request for processing
+                    Approval.ProcessResult result = Approval.process(req);
+                    // display if the reqeust was successful
+                    System.debug('Submitted for approval successfully: '+result.isSuccess());
+                }
+                
+            }else{
+                for(Appointment__c a:Trigger.new)
+                    a.addError('The Provider already has an appointment at that hour. Please select a different time. ');
+            }
+        }else{
+            for(Appointment__c a:Trigger.new)
+                a.addError('The Client already has an appointment at that hour. Please select a different time. ');
+        }
+    }
+    
+    
+    if(Trigger.isUpdate && Trigger.isBefore){       
+        // share with the doctor
+        CreateCalendarEventFromAppointment.shareWithDoc(Trigger.new);
+        if(CreateCalendarEventFromAppointment.isApproved(Trigger.new)){
+            if(CreateCalendarEventFromAppointment.NoClientCalendarOverlap(Trigger.new)){
+                if(CreateCalendarEventFromAppointment.NoProviderCalendarOverlap(Trigger.new)){
+                    CreateCalendarEventFromAppointment.CreateEvent(Trigger.new);
+                    
+                }else{
+                    for(Appointment__c a:Trigger.new)
+                        a.addError('The Provider already has an appointment at that hour. Please select a different time. A');
+                }
+            }else{
+                for(Appointment__c a:Trigger.new)
+                    a.addError('The Client already has an appointment at that hour. Please select a different time. A');
+            }
+        }
+    }
+}

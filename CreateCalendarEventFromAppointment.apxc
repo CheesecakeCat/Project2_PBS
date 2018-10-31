@@ -1,0 +1,211 @@
+public class CreateCalendarEventFromAppointment {
+
+    public static void shareWithDoc(List<Appointment__c> apmnts){
+        List<Appointment__Share> appointmentsToShare = new List<Appointment__Share>();
+        
+        for(Appointment__c a:apmnts){
+			// only share the appointment if it is Approved
+            if(a.Approval_Status__c=='Approved'){
+                // gotta create a new Appointment_Share object. It's like a custom/manual sharing rule
+                Appointment__Share appShr = new Appointment__Share();
+                                
+                Integer n = [SELECT COUNT() FROM User WHERE Name=:a.Provider_s_Name__c LIMIT 1];
+                if (n>0){ // cheat, if there is no user linked to that provider, skip the appointment sharing
+                    User tempUser = [SELECT id, Name FROM User WHERE Name=:a.Provider_s_Name__c LIMIT 1];                                    
+                    appShr.ParentId = a.id; // the id of the record being shared
+                    appShr.UserOrGroupId = tempUser.id; // the user you are sharing with
+                    appShr.AccessLevel = 'Read'; // the access level you are assigning
+                    appShr.RowCause = 'Manual';	// the reason, leave as manual
+                   // System.debug(appShr);
+                    appointmentsToShare.add(appShr); // list of things to be shared
+                }
+            }
+        }        
+        insert appointmentsToShare;    // insert those new sharing rules         
+    } // ShareWithDoc
+    
+    
+    public static void CreateEvent(List<Appointment__c> apmnts){
+        List<Event> eventsToMake = new List<Event>();
+        List<Appointment__c> AppointmentsToUpdate = new List<Appointment__c>();
+        List<Appointment__Share> AppointmentSharesToRevoke = new List<Appointment__Share>();
+        
+        for(Appointment__c a : apmnts){
+          System.debug(a.Approval_Status__c);
+            if(a.Approval_Status__c=='Approved'){  
+                
+                // is there already an event made? modify it instead!
+                Integer matchingEvents = [SELECT COUNT() FROM Event WHERE WhoId=:a.Client__c AND StartDateTime=:a.Appointment_Start_Time__c AND WhatId=:a.Provider__c];
+                if(matchingEvents==1){                    
+                    AppointmentsToUpdate.add(a);
+                }
+                if(matchingEvents==0){                
+                    Event e = new Event();  Event ep = new Event(); Event ec = new Event();
+                    // Grab the actual Client from the lookup field in the appointment
+                    Client__c c = [SELECT id, Name FROM Client__c WHERE id=:a.Client__c]; System.debug(c);
+                    // Find the Contact with the matching Name
+                    Contact temp = [SELECT id, Name FROM Contact WHERE Name=:c.Name Limit 1];
+                    // Grab the selected Provider in order to extract the address
+                    Provider__c p = [SELECT id, Name, Address__c FROM Provider__c WHERE id=:a.Provider__c];
+                    // Grab the SysAdmin id from my name
+                    User DM = [SELECT id, Name FROM User WHERE Name=:'Gina Ramsay'];
+                    User Cli = [SELECt id, Name FROM User WHERE Name=:c.Name];
+                    
+                    Integer n = [SELECT COUNT() FROM User WHERE Name=:a.Provider_s_Name__c LIMIT 1];
+                    if (n>0){ // cheat, if there is no user linked to that provider, skip making the calendar event
+                        User Prov = [SELECT id, Name FROM User WHERE Name=:p.Name];
+                        // Calendar Event for the Providor 
+                        ep.OwnerId = Prov.id; // This event will appear on the doc's calendar
+                        ep.WhoId = temp.id; // Name event field
+                        ep.Subject = 'Appointment'; // Subject field
+                        ep.StartDateTime = a.Appointment_Start_Time__c; // Start Time field
+                        ep.WhatId = a.Provider__c; // Related To field
+                        ep.EndDateTime = a.Appointment_End_Time__c; // End time field
+                        ep.Location = p.Address__c;
+                        eventsToMake.add(ep);
+                    }                                      
+                   
+                   // start to map stuff! Event for the Admin
+                    e.OwnerId = DM.id; // Assigned to event field
+                    e.WhoId = temp.id; // Name event field
+                    e.Subject = 'Appointment'; // Subject field
+                    e.StartDateTime = a.Appointment_Start_Time__c; // Start Time field
+                    e.WhatId = a.Provider__c; // Related To field
+                    e.EndDateTime = a.Appointment_End_Time__c; // End time field
+                    e.Location = p.Address__c;                                
+                    eventsToMake.add(e); // Add it to the event list
+                                                        
+                    /* Portal user Can't own an Activity...
+                    ec.OwnerId = Cli.id; // This event will appear on the doc's calendar
+                    ec.WhoId = temp.id; // Name event field
+                    ec.Subject = 'Appointment'; // Subject field
+                    ec.StartDateTime = a.Date_and_Time__c; // Start Time field
+                    ec.WhatId = a.Provider__c; // Related To field
+                    ec.EndDateTime = a.Appointment_End_Time__c; // End time field
+                    ec.Location = p.Address__c;
+                    eventsToMake.add(ec); */
+                    
+                    //System.debug(e);
+                } // create new event
+            } // if approved
+            
+            if (a.Approval_Status__c=='Cancelled'){ 
+                // revoke the sharing rule if there is one and cancel any matching calendar events
+                 Appointment__Share appShr = new Appointment__Share();
+                // Grab the actual Client from the lookup field in the appointment
+                Client__c c = [SELECT id, Name FROM Client__c WHERE id=:a.Client__c]; System.debug(c);
+                // Find the Contact with the matching Name
+                Contact temp = [SELECT id, Name FROM Contact WHERE Name=:c.Name Limit 1];
+                // Grab the selected Provider in order to extract the address
+                Provider__c p = [SELECT id, Name, Address__c FROM Provider__c WHERE id=:a.Provider__c];
+                // Grab the SysAdmin id from my name
+                User DM = [SELECT id, Name FROM User WHERE Name=:'Gina Ramsay'];
+                User Cli = [SELECt id, Name FROM User WHERE Name=:c.Name];
+                                
+                Integer n = 0;
+                n = [SELECT COUNT() FROM Appointment__Share WHERE ParentId=:a.Id];
+                if (n > 0){ // there is a manual sharing rule
+                    appShr = [SELECT id FROM Appointment__Share WHERE ParentId=:a.Id];
+                    AppointmentSharesToRevoke.add(appShr);
+                }
+                n = [SELECT COUNT() FROM EVENT WHERE (StartDateTime=:a.Appointment_Start_Time__c AND OwnerId=:Cli.id)];
+                if (n>0) {
+                    Event e = [Select id FROM Event WHERE (StartDateTime=:a.Appointment_Start_Time__c AND OwnerId=:Cli.id )]; 
+                    delete e;
+                }
+                
+            }
+        } // for loop
+        insert eventsToMake; // commit the events
+        delete AppointmentSharesToRevoke;
+        UpdateEvent(AppointmentsToUpdate);
+    }
+
+    public static void UpdateEvent(List<Appointment__c> apmnts){
+        List<Event> eventsToUpdate = new List<Event>();
+        //List<Appointment__c> appointmentsToUpdate = new List<Appointment__c>();
+        System.debug('inside update');
+        for(Appointment__c a: apmnts){
+            System.debug(a.Approval_Status__c);
+             if(a.Approval_Status__c=='Approved'){
+                // Grab the actual Client from the lookup field in the appointment
+                Client__c c = [SELECT id, Name FROM Client__c WHERE id=:a.Client__c];
+                // Find the Contact with the matching Name
+                Contact contemp = [SELECT id, Name FROM Contact WHERE Name=:c.Name Limit 1];
+                
+                Appointment__c oldApmnt = [SELECT Id, Provider__c, Appointment_Start_Time__c FROM Appointment__c WHERE id=:a.id];
+                
+                Event e = [SELECT id,  WhoId, WhatId, StartDateTime, EndDateTime FROM Event WHERE WhoId=:contemp.Id AND WhatId=:oldApmnt.Provider__c AND StartDateTime=:oldApmnt.Appointment_Start_Time__c];
+                
+                e.StartDateTime = a.Appointment_Start_Time__c;
+                e.EndDateTime = a.Appointment_End_Time__c;
+    
+                eventsToUpdate.add(e);
+            }
+        }
+        update eventsToUpdate;
+       // update appointmentsToUpdate;
+    }
+
+    public static boolean isApproved(List<Appointment__c> apmnts){
+        for(Appointment__c a: apmnts){
+            Appointment__c old = [SELECT id, Approval_Status__c FROM Appointment__c WHERE id=:a.Id];
+            if(a.Approval_Status__c=='Approved')
+                return true;
+            else
+                return false;
+        }
+        return false;
+    }      
+    
+    public static boolean NoClientCalendarOverlap(List<Appointment__c> apmnts){  
+        System.debug('inside no client overlap');
+        for(Appointment__c a: apmnts){
+            System.debug(a.Approval_Status__c);
+            
+            if(a.Approval_Status__c=='Approved'){ // If it is approved, then 1 instance of the appointment will already exist
+                Integer NumOfRepeats = [SELECT COUNT() FROM Appointment__c WHERE (Client__c=:a.Client__c AND Appointment_Start_Time__c=:a.Appointment_Start_Time__c AND Approval_Status__c=:'Approved')];
+                System.debug(NumOfRepeats);
+                if (NumOfRepeats > 1)
+                    return false;
+            }
+            if(a.Approval_Status__c=='Created' || a.Approval_Status__c=='Submitted' ){
+                Integer NumOfRepeats = [SELECT COUNT() FROM Appointment__c WHERE (Client__c=:a.Client__c AND Appointment_Start_Time__c=:a.Appointment_Start_Time__c AND Approval_Status__c=:'Approved')];
+                List<Appointment__c> t = [SELECT id, Name, Client__c, Provider__c, Appointment_Start_Time__c, Approval_Status__c FROM Appointment__C WHERE (Client__c=:a.Client__c AND Approval_Status__c=:'Approved')];
+                System.debug('t: ' +t);
+                System.debug('a: ' +a);
+                System.debug(NumOfRepeats);
+                if (NumOfRepeats > 0)
+                    return false;
+            }
+        }
+        return true;
+        
+    }
+    
+    public static boolean NoProviderCalendarOverlap(List<Appointment__c> apmnts){
+        // gonna need something more efficient than this
+        System.debug('inside no provider overlap');
+        
+        for(Appointment__c a: apmnts){
+            System.debug(a.Approval_Status__c);
+            if(a.Approval_Status__c=='Approved'){
+                Integer NumOfRepeats = [SELECT COUNT() FROM Appointment__c WHERE (Provider__c=:a.Provider__c AND Appointment_Start_Time__c=:a.Appointment_Start_Time__c AND Approval_Status__c=:'Approved')];
+                System.debug(NumOfRepeats);
+                if (NumOfRepeats > 1)
+                    return false;
+               // check for events too 
+            }
+            if(a.Approval_Status__c=='Created' || a.Approval_Status__c=='Submitted' ){
+                Integer NumOfRepeats = [SELECT COUNT() FROM Appointment__c WHERE (Provider__c=:a.Provider__c AND Appointment_Start_Time__c=:a.Appointment_Start_Time__c AND Approval_Status__c=:'Approved')];
+                System.debug(NumOfRepeats);
+                if (NumOfRepeats > 0)
+                    return false;
+                // check for events too
+            }
+            
+        }
+        return true;
+        
+    }
+}
