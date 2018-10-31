@@ -29,14 +29,14 @@
         <apex:inputText id="Name__c" value="{!nameValue}"/>
     </span>
     <span>
-        <apex:commandButton value="Search" action="{!updateProviders}" reRender="list"/>
+        <apex:commandButton value="Search" action="{!updateProviders}" reRender="listForm" onClick=""/>
     </span>
 	</div>
     </apex:form>
     <apex:pageBlock >
-    	<apex:form >
+    	<apex:form id="listForm">
             <div style="padding-left:10%; padding-right:10%">
-        	<apex:pageBlockTable id="list" value="{!Providers}" var="p">
+        	<apex:pageBlockTable id="list" value="{!Providers}" var="p" rendered="{!Providers.size>0}">
                 <div>
                     <!--apex:column value="{!p.Name}"/-->
                     <apex:column >
@@ -61,8 +61,11 @@
                 </div>
                 <br/>
             </apex:pageBlockTable>
+                <!--p id="noResults" style="display:hidden" rendered="false">Search returned no results</p-->
             </div>
+            
         </apex:form>
+        <p id="noResults" style="display:hidden" rendered="{!IF(Providers.size < 1, false, true)}">Search returned no results</p>
     </apex:pageBlock>
     
     <script>
@@ -72,6 +75,7 @@
     document.getElementById("j_id0:j_id1:Language__c").disabled = true;
     document.getElementById("j_id0:j_id1:Gender__c").disabled = true;
     document.getElementById("j_id0:j_id1:Name__c").disabled = true;
+    document.getElementById("noResults").hidden = true;
     
     function change_Specialty(obj)
     {
@@ -135,12 +139,12 @@
     
     function Limit_Input(evt)
     {
-        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,. ';
         
         var k = document.all?parseInt(evt.keyCode): parseInt(evt.which);
             if (k!=13 && k!=8 && k!=0){
                 if ((evt.ctrlKey==false) && (evt.altKey==false)) {
-                return (characters.indexOf(String.fromCharCode(k))!=-1);
+                return (characters.indexOf(String.fromCharCode(k))!=-1);adad
                 } else {
                 return true;
                 }
