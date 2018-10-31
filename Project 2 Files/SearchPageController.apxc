@@ -15,7 +15,7 @@ public class SearchPageController {
     public String genderValue{get;set;}
     public String nameValue{get;set;}
     
-    public Id recordID{get;set;}
+    public Id provider_ID{get;set;}
     
     public SearchPageController(ApexPages.StandardController stdController)
     {
@@ -50,8 +50,8 @@ public class SearchPageController {
        }*/  
     
     public PageReference Go() {
-      Id id = System.currentPageReference().getParameters().get('id');
-      PageReference nextpage = new PageReference('/apex/ProviderInfo?id='+id);
+      provider_Id = System.currentPageReference().getParameters().get('id');
+      PageReference nextpage = new PageReference('/apex/ProviderInfo?id='+provider_id);
                 return nextpage;
     }
     
