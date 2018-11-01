@@ -10,7 +10,7 @@
     </span>
     <span>
         <apex:inputCheckbox id="Location" value="{!locationChecked}" onChange="change_Location(this)"/>City&nbsp;
-        <apex:inputText id="Location__c" value="{!locationValue}" onkeypress="return Limit_Input(event);"/>
+        <apex:inputText id="Location__c" value="{!locationValue}" onkeypress="return Limit_Input(event)"/>
     </span>
     <span>
         <apex:inputCheckbox id="Language" value="{!languageChecked}" onChange="change_Language(this)"/>Language&nbsp;
@@ -65,7 +65,7 @@
             </div>
             
         </apex:form>
-        <p id="noResults" style="display:hidden" rendered="{!IF(Providers.size < 1, false, true)}">Search returned no results</p>
+        <p id="noResults" style="display:hidden" rendered="{!IF(Providers.size < 1, true, false)}">Search returned no results</p>
     </apex:pageBlock>
     
     <script>

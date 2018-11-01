@@ -17,6 +17,10 @@ public class SearchPageController {
     
     public Id provider_ID{get;set;}
     
+    public SearchPageController()
+    {
+        
+    }
     public SearchPageController(ApexPages.StandardController stdController)
     {
         System.debug('Controller Entered');
@@ -35,7 +39,7 @@ public class SearchPageController {
         return provider_list;
     }
     
-    public ApexPages.StandardSetController setProvider {
+    /*public ApexPages.StandardSetController setProvider {
         get {
             if(setProvider == null) {
                 setProvider = new ApexPages.StandardSetController(Database.getQueryLocator(
@@ -44,7 +48,7 @@ public class SearchPageController {
             return setProvider;
         }
         set;
-    }
+    }*/
     
     public PageReference Go() {
       provider_Id = System.currentPageReference().getParameters().get('id');
@@ -53,7 +57,7 @@ public class SearchPageController {
                 return nextpage;
     }
     
-    public List<String> getAddresses()
+    /*public List<String> getAddresses()
     {
         List<String> return_list = new List<String>();
         
@@ -63,7 +67,7 @@ public class SearchPageController {
         }
         
         return return_list;
-    }
+    }*/
     
 	public Boolean getSpecialtyChecked()
     {
