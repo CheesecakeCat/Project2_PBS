@@ -1,4 +1,4 @@
-<apex:page id="myPage" docType="html-5.0" standardController="Provider__c" extensions="JqueryDatePicker, SearchPageController">
+<apex:page id="myPage" docType="html-5.0" standardController="Provider__c" extensions="SearchPageController">
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>

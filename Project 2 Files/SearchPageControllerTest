@@ -1,0 +1,292 @@
+@isTest
+public class SearchPageControllerTest {
+    @TestSetup
+    public static void setup()
+    {
+        Provider__c stacy = new Provider__c(Name = 'Stacy Simmons', Specialty__c = 'Cardiologist', 
+                                         Address__c = '404 4th Ave N, Fargo, ND 58102', Languages__c = 'Spanish',
+                                          Gender__c = 'Female', Email__c = 'ssimmons@gmail.com');
+        Client__c david = new Client__c(Name = 'David Copeland');
+        insert stacy;
+        insert david;
+    }
+	@isTest
+    public static void testSearchPage()
+    {
+        PageReference pageRef = Page.InProgressSearchPage;
+        Test.setCurrentPage(pageRef);
+        
+        SearchPageController controller = new SearchPageController();
+       	controller.specialtyChecked = true;
+        controller.languageChecked = true;
+        controller.locationChecked = true;
+        controller.genderChecked = true;
+        controller.nameChecked = true;
+        
+        controller.specialtyValue = 'Cardiologist';
+        controller.languageValue = 'Spanish';
+        controller.locationValue = 'Fargo';
+        controller.genderValue = 'Female';
+        controller.nameValue = 'Stacy Simmons';
+        
+        Provider__c provider = [SELECT Name, Specialty__c, Languages__c, Address__c, Gender__c FROM Provider__c
+                                 WHERE Name = 'Stacy Simmons' AND Specialty__c = 'Cardiologist'
+                                 AND Languages__c INCLUDES ('Spanish') AND Gender__c = 'Female'
+                                 AND Address__c LIKE '%Fargo%'];
+        System.assertEquals('Stacy Simmons', provider.Name);
+    }
+    @isTest
+    public static void testSelectOptions()
+    {
+        List<SelectOption> Specialties = new List<SelectOption>();
+        List<SelectOption> Languages = new List<SelectOption>();
+        List<SelectOption> Genders = new List<SelectOption>();
+        SearchPageController spc = new SearchPageController();
+        
+        specialties.add(new SelectOption('', 'None Specified'));
+        specialties.add(new SelectOption('Allergist/Immunologist', 'Allergist/Immunologist'));
+        specialties.add(new SelectOption('Anesthesiologist', 'Anesthesiologist'));
+        specialties.add(new SelectOption('Cardiologist', 'Cardiologist'));
+        specialties.add(new SelectOption('Dentist', 'Dentist'));
+        specialties.add(new SelectOption('Dermatologist', 'Dermatologist'));
+        specialties.add(new SelectOption('Endocrinologist', 'Endocrinologist'));
+        specialties.add(new SelectOption('Family Physicians', 'Family Physicians'));
+        specialties.add(new SelectOption('Gastroenterologist', 'Gastroenterologist'));
+        specialties.add(new SelectOption('Hermatologist', 'Hermatologist'));
+        specialties.add(new SelectOption('Infectious Disease Specialist', 'Infectious Disease Specialist'));
+        specialties.add(new SelectOption('Neurologist', 'Neurologist'));
+        specialties.add(new SelectOption('Obstetrician/Gynecologist', 'Obstetrician/Gynecologist'));
+        specialties.add(new SelectOption('Onocologist', 'Onocologist'));
+        specialties.add(new SelectOption('Ophthalmologist', 'Ophthalmologist'));
+        specialties.add(new SelectOption('Otoraryngologist', 'Otoraryngologist'));
+        specialties.add(new SelectOption('Osteopath', 'Osteopath'));
+        specialties.add(new SelectOption('Pathologist', 'Pathologist'));
+        specialties.add(new SelectOption('Pediatrician', 'Pediatrician'));
+        specialties.add(new SelectOption('Psychiatrist', 'Psychiatrist'));
+        specialties.add(new SelectOption('Pulmonologist', 'Pulmonologist'));
+        specialties.add(new SelectOption('Radiologist', 'Radiologist'));
+        specialties.add(new SelectOption('Rheumatologist', 'Rheumatologist'));
+        specialties.add(new SelectOption('Urologist', 'Urologist'));
+        
+        languages.add(new SelectOption('','None Specified'));
+        languages.add(new SelectOption('Arabic', 'Arabic'));
+        languages.add(new SelectOption('Chinese Mandarin', 'Chinese Mandarin'));
+        languages.add(new SelectOption('Dutch', 'Dutch'));
+        languages.add(new SelectOption('English', 'English'));
+        languages.add(new SelectOption('French', 'French'));
+        languages.add(new SelectOption('German', 'German'));
+        languages.add(new SelectOption('Greek', 'Greek'));
+        languages.add(new SelectOption('Hindi', 'Hindi'));
+        languages.add(new SelectOption('Italian', 'Italian'));
+        languages.add(new SelectOption('Japanese', 'Janapese'));
+        languages.add(new SelectOption('Korean', 'Korean'));
+        languages.add(new SelectOption('Polish', 'Polish'));
+        languages.add(new SelectOption('Portuguese', 'Portuguese'));
+        languages.add(new SelectOption('Russian', 'Russian'));
+        languages.add(new SelectOption('Spanish', 'Spanish'));
+        languages.add(new SelectOption('Tagalong', 'Tagalong'));
+        languages.add(new SelectOption('Vietnamese', 'Vietnamese'));
+        
+        genders.add(new SelectOption('', 'None Specified'));
+        genders.add(new SelectOption('Male', 'Male'));
+        genders.add(new SelectOption('Female', 'Female'));
+        
+        List<SelectOption> test_spec = spc.getSpecialtyOptions();
+        List<SelectOption> test_lang = spc.getLanguageOptions();
+        List<SelectOption> test_gend = spc.getGenderOptions();
+        System.assertEquals(Specialties, test_spec);
+        System.assertEquals(Languages, test_lang);
+        System.assertEquals(Genders, test_gend);
+    }
+    
+    @isTest
+    public static void testUpdateProviders()
+    {
+        PageReference pageRef = Page.InProgressSearchPage;
+        Test.setCurrentPage(pageRef);
+        
+        SearchPageController controller = new SearchPageController();
+       	controller.specialtyChecked = true;
+        controller.languageChecked = true;
+        controller.locationChecked = true;
+        controller.genderChecked = true;
+        controller.nameChecked = true;
+        
+        controller.specialtyValue = 'Cardiologist';
+        controller.languageValue = 'Spanish';
+        controller.locationValue = 'Fargo';
+        controller.genderValue = 'Female';
+        controller.nameValue = 'Stacy Simmons';
+        
+        List<Provider__c> provider = [SELECT Name, Specialty__c, Languages__c, Address__c, Gender__c FROM Provider__c
+                                 WHERE Name = 'Stacy Simmons' AND Specialty__c = 'Cardiologist'
+                                 AND Languages__c INCLUDES ('Spanish') AND Gender__c = 'Female'
+                                 AND Address__c LIKE '%Fargo%'];
+        controller.provider_list = new List<Provider__c>();
+        controller.updateProviders();
+        System.assertEquals(provider, controller.provider_list);
+        System.assertEquals(provider, controller.getProviders());
+    }
+    
+    @isTest
+    public static void testSwaps()
+    {
+        SearchPageController controller = new SearchPageController();
+        controller.specialtyChecked = false;
+        controller.languageChecked = false;
+        controller.locationChecked = false;
+        controller.genderChecked = false;
+        controller.nameChecked = false;
+        
+        controller.swapSpecialtyChecked();
+        controller.swapLanguageChecked();
+        controller.swapLocationChecked();
+        controller.swapGenderChecked();
+        controller.swapNameChecked();
+        
+        System.assertEquals(true, controller.specialtyChecked);
+        System.assertEquals(true, controller.languageChecked);
+        System.assertEquals(true, controller.locationChecked);
+        System.assertEquals(true, controller.genderChecked);
+        System.assertEquals(true, controller.nameChecked);
+        
+        controller.swapSpecialtyChecked();
+        controller.swapLanguageChecked();
+        controller.swapLocationChecked();
+        controller.swapGenderChecked();
+        controller.swapNameChecked();
+        
+        System.assertEquals(false, controller.specialtyChecked);
+        System.assertEquals(false, controller.languageChecked);
+        System.assertEquals(false, controller.locationChecked);
+        System.assertEquals(false, controller.genderChecked);
+        System.assertEquals(false, controller.nameChecked);
+    }
+    
+    @isTest
+    public static void passGo()
+    {
+        SearchPageController controller = new SearchPageController();
+        controller.specialtyChecked = true;
+        controller.languageChecked = true;
+        controller.locationChecked = true;
+        controller.genderChecked = true;
+        controller.nameChecked = true;
+        
+        controller.specialtyValue = 'Cardiologist';
+        controller.languageValue = 'Spanish';
+        controller.locationValue = 'Fargo';
+        controller.genderValue = 'Female';
+        controller.nameValue = 'Stacy Simmons';
+        String nextPage = controller.Go().getURL();
+        
+        System.assertEquals('/apex/ProviderInfo?id=null', nextPage);
+    }
+    
+    @isTest
+    public static void testGetInfo()
+    {
+        SearchPageController controller = new SearchPageController();
+       	controller.specialtyChecked = true;
+        controller.languageChecked = false;
+        controller.locationChecked = true;
+        controller.genderChecked = false;
+        controller.nameChecked = true;
+        
+        controller.specialtyValue = 'Cardiologist';
+        controller.languageValue = '';
+        controller.locationValue = 'Fargo';
+        controller.genderValue = '';
+        controller.nameValue = 'Stacy Simmons';
+        
+        System.assertEquals(true, controller.getSpecialtyChecked());
+        System.assertEquals(false, controller.getLanguageChecked());
+        System.assertEquals(true, controller.getLocationChecked());
+        System.assertEquals(false, controller.getGenderChecked());
+        System.assertEquals(true, controller.getNameChecked());
+    }
+    
+    @isTest
+    public static void testFirstPassLang()
+    {
+        SearchPageController controller = new SearchPageController();
+        controller.languageChecked = true;
+        controller.languageValue = 'Spanish';
+        
+        controller.updateProviders();
+        System.assertEquals('Stacy Simmons', controller.getProviders()[0].Name);
+       
+    }
+    @isTest
+    public static void testFirstPassLoc()
+    {
+        SearchPageController controller = new SearchPageController();
+        controller.locationChecked = true;
+        controller.locationValue = 'Fargo';
+        
+        controller.updateProviders();
+        System.assertEquals('Stacy Simmons', controller.getProviders()[0].Name); 
+    }
+    @isTest
+    public static void testTimes()
+    {
+        SearchPageController controller = new SearchPageController();
+        controller.eight();
+        System.assertEquals(Time.newInstance(8,0,0,0), controller.actual_time);
+        controller.nine();
+        System.assertEquals(Time.newInstance(9,0,0,0), controller.actual_time);
+        controller.ten();
+        System.assertEquals(Time.newInstance(10,0,0,0), controller.actual_time);
+        controller.eleven();
+        System.assertEquals(Time.newInstance(11,0,0,0), controller.actual_time);
+        controller.twe();
+        System.assertEquals(Time.newInstance(12,0,0,0), controller.actual_time);
+        controller.three();
+        System.assertEquals(Time.newInstance(15,0,0,0), controller.actual_time);
+        controller.four();
+        System.assertEquals(Time.newInstance(16,0,0,0), controller.actual_time);
+        controller.five();
+        System.assertEquals(Time.newInstance(17,0,0,0), controller.actual_time);
+        controller.six();
+        System.assertEquals(Time.newInstance(18,0,0,0), controller.actual_time);
+        controller.seven();
+        System.assertEquals(Time.newInstance(19,0,0,0), controller.actual_time);
+        controller.eightPm();
+        System.assertEquals(Time.newInstance(20,0,0,0), controller.actual_time);
+    }
+    @isTest
+    public static void testBook()
+    {
+        SearchPageController controller = new SearchPageController();
+        controller.eight();
+        controller.fromDate = Date.newInstance(1960, 2, 17);
+        
+        String nextPage = controller.Book().getURL();
+        System.assertEquals('/apex/ThankYouPage', nextPage);
+    }
+    @isTest
+    public static void testBookAppointment()
+    {
+        SearchPageController controller = new SearchPageController();
+        
+        String nextPage = controller.BookAppointment().getURL();
+    	System.assertEquals('/apex/appointmentPage', nextPage);
+    }
+    @isTest
+    public static void testShowDates()
+    {        
+        SearchPageController controller = new SearchPageController();
+
+        PageReference pageRef = controller.showDates();
+        System.assertEquals(null, pageRef);
+    }
+    @isTest
+    public static void testDocId()
+    {
+        SearchPageController controller = new SearchPageController();
+        controller.doctor_Id = 'a0E0b00001GwjbyEAB';
+        Id docId = controller.doctor_Id;
+        
+        System.assertEquals('a0E0b00001GwjbyEAB', docId);
+    }
+}
